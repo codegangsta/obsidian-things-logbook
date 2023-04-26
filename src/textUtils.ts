@@ -9,7 +9,7 @@ export function getHeadingLevel(line = ""): number | null {
 export function toHeading(title: string, level: number, addEmptyLine: boolean): string {
   const emptyLine = addEmptyLine ? "\n" : "";
   const hash = "".padStart(level, "#");
-  return `${emptyLine}${hash} ${title}`;
+  return `${emptyLine}${hash} [[${title}]]`;
 }
 
 export function getTab(useTab: boolean, tabSize: number): string {
