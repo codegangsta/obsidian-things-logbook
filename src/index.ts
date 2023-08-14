@@ -78,8 +78,7 @@ export default class ThingsLogbookPlugin extends Plugin {
           await this.writeOptions({ hasAcceptedDisclaimer: true });
           this.syncLogbook();
         },
-        text:
-          "Enabling sync will backfill your entire Things Logbook into Obsidian. This means potentially creating or modifying hundreds of notes. Make sure to test the plugin in a test vault before continuing.",
+        text: "Enabling sync will backfill your entire Things Logbook into Obsidian. This means potentially creating or modifying hundreds of notes. Make sure to test the plugin in a test vault before continuing.",
         title: "Sync Now?",
       }).open();
     }
@@ -100,8 +99,7 @@ export default class ThingsLogbookPlugin extends Plugin {
           // update the settings tab display
           this.settingsTab.display();
         },
-        text:
-          "Enabling sync will backfill your entire Things Logbook into Obsidian. This means potentially creating or modifying hundreds of notes. Make sure to test the plugin in a test vault before continuing.",
+        text: "Enabling sync will backfill your entire Things Logbook into Obsidian. This means potentially creating or modifying hundreds of notes. Make sure to test the plugin in a test vault before continuing.",
         title: "Sync Now?",
       }).open();
     }

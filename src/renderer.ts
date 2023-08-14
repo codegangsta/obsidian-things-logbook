@@ -1,7 +1,7 @@
 import { App } from "obsidian";
 import { ISettings } from "./settings";
 import { ISubTask, ITask } from "./things";
-import { getHeadingLevel, getTab, groupBy, toHeading } from "./textUtils";
+import { getTab } from "./textUtils";
 
 export class LogbookRenderer {
   private app: App;
@@ -25,18 +25,43 @@ export class LogbookRenderer {
       .map((tag) => `#${prefix}${tag}`)
       .join(" ");
 
-    const taskTitle = `[${task.title}](things:///show?id=${task.uuid}) ${tags}`.trimEnd()
+    const taskTitle =
+      `${task.title} [ ](things:///show?id=${task.uuid}) ${tags}`.trimEnd();
 
     const notes = this.settings.doesSyncNoteBody
       ? String(task.notes || "")
-        .trimEnd()
-        .split("\n")
-        .filter((line) => !!line)
-        .map((noteLine) => `${tab}${noteLine}`)
-      : ""
+          .trimEnd()
+          .split("\n")
+          .filter((line) => !!line)
+          .map((noteLine) => `${tab}${noteLine}`)
+      : "";
+
+    // TODO: Bring this into the settings
+    let mark = "x";
+    if (task.cancelled) {
+      mark = this.settings.canceledMark;
+    } else if (task.tags.includes("Meeting")) {
+      mark = '"';
+    } else if (task.tags.includes("Event")) {
+      mark = "l";
+    } else if (task.tags.includes("Journal")) {
+      mark = "i";
+    } else if (task.tags.includes("Idea")) {
+      mark = "I";
+    } else if (task.tags.includes("Book")) {
+      mark = "b";
+    } else if (task.tags.includes("Notable")) {
+      mark = '"';
+    } else if (task.tags.includes("Positive")) {
+      mark = "u";
+    } else if (task.tags.includes("Negative")) {
+      mark = "d";
+    } else if (task.tags.includes("Question")) {
+      mark = "?";
+    }
 
     return [
-      `- [${task.cancelled ? this.settings.canceledMark : 'x'}] ${taskTitle}`,
+      `- [${mark}] ${taskTitle}`,
       ...notes,
       ...task.subtasks.map(
         (subtask: ISubTask) =>
@@ -48,17 +73,10 @@ export class LogbookRenderer {
   }
 
   public render(tasks: ITask[]): string {
-    const { sectionHeading, doesSyncProject, doesAddNewlineBeforeHeadings } = this.settings;
-    const headings = groupBy<ITask>(tasks, (task) => task.area || (doesSyncProject ? task.project : "") || "");
-    const headingLevel = getHeadingLevel(sectionHeading);
+    const { sectionHeading } = this.settings;
 
     const output = [sectionHeading];
-    Object.entries(headings).map(([heading, tasks]) => {
-      if (heading !== "") {
-        output.push(toHeading(heading, headingLevel + 1, doesAddNewlineBeforeHeadings));
-      }
-      output.push(...tasks.map(this.renderTask));
-    });
+    output.push(...tasks.map(this.renderTask));
 
     return output.join("\n");
   }
