@@ -122,6 +122,8 @@ export default class ThingsLogbookPlugin extends Plugin {
       return;
     }
 
+    console.log(taskRecords);
+
     const tasks: ITask[] = buildTasksFromSQLRecords(
       taskRecords,
       checklistRecords

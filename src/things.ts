@@ -33,6 +33,7 @@ export interface ITaskRecord {
   stopDate: number;
   status: string;
   tag?: string;
+  type: string;
 }
 
 export interface IChecklistItemRecord {
@@ -47,7 +48,6 @@ const thingsSqlitePath = THINGS_DB_PATH.replace("~", os.homedir());
 
 export class ThingsSQLiteSyncError extends Error {}
 
-
 const STATUS_CANCELLED = 2;
 
 export function buildTasksFromSQLRecords(
@@ -58,6 +58,11 @@ export function buildTasksFromSQLRecords(
   taskRecords.forEach(({ tag, ...task }) => {
     const id = task.uuid;
     const { status, title, ...other } = task;
+
+    // Task is a heading and not an actual task
+    if (task.type == "2") {
+      return;
+    }
 
     if (tasks[id]) {
       tasks[id].tags.push(tag);
@@ -104,6 +109,7 @@ async function getTasksFromThingsDb(
         TMTask.startDate as startDate,
         TMTask.stopDate as stopDate,
         TMTask.status as status,
+        TMTask.type as type,
         TMArea.title as area,
         TMTag.title as tag,
         TMProject.title as project
