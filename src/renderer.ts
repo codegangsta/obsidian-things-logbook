@@ -26,7 +26,7 @@ export class LogbookRenderer {
       .join(" ");
 
     const taskTitle =
-      `${task.title} [ ](things:///show?id=${task.uuid}) ${tags}`.trimEnd();
+      `${task.title}[ ](things:///show?id=${task.uuid}) ${tags}`.trimEnd();
 
     const notes = this.settings.doesSyncNoteBody
       ? String(task.notes || "")
@@ -76,7 +76,27 @@ export class LogbookRenderer {
     const { sectionHeading } = this.settings;
 
     const output = [sectionHeading];
-    output.push(...tasks.map(this.renderTask));
+    const projects: Record<string, ITask> = {};
+    tasks.forEach((task) => {
+      if (task.type == "1") {
+        projects[task.title] = task;
+      }
+    });
+
+    tasks.forEach((task) => {
+      // If a tasks project is completed today, don't include it
+      const project = projects[task.project];
+      if (project) {
+        return;
+      }
+
+      // Task is a heading and not an actual task
+      if (task.type == "2") {
+        return;
+      }
+
+      output.push(this.renderTask(task));
+    });
 
     return output.join("\n");
   }

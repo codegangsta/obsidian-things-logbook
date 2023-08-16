@@ -20,6 +20,8 @@ export interface ITask {
   stopDate: number;
   cancelled: boolean;
   subtasks: ISubTask[];
+  type: string;
+  heading?: string;
 }
 
 export interface ITaskRecord {
@@ -33,6 +35,7 @@ export interface ITaskRecord {
   status: string;
   tag?: string;
   type: string;
+  heading?: string;
 }
 
 export interface IChecklistItemRecord {
@@ -57,11 +60,6 @@ export function buildTasksFromSQLRecords(
   taskRecords.forEach(({ tag, ...task }) => {
     const id = task.uuid;
     const { status, title, ...other } = task;
-
-    // Task is a heading and not an actual task
-    if (task.type == "2") {
-      return;
-    }
 
     if (tasks[id]) {
       tasks[id].tags.push(tag);
@@ -111,7 +109,8 @@ async function getTasksFromThingsDb(
         TMTask.type as type,
         TMArea.title as area,
         TMTag.title as tag,
-        TMProject.title as project
+        TMProject.title as project,
+        TMTask.heading as heading
     FROM
         TMTask
     LEFT JOIN TMTaskTag
