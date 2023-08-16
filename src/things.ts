@@ -1,7 +1,6 @@
-import * as os from "os";
-
 import { THINGS_DB_PATH } from "./constants";
 import { querySqliteDB } from "./sqlite";
+import { execSync } from "child_process";
 
 export const TASK_FETCH_LIMIT = 1000;
 
@@ -44,7 +43,7 @@ export interface IChecklistItemRecord {
   stopDate: number;
 }
 
-const thingsSqlitePath = THINGS_DB_PATH.replace("~", os.homedir());
+const thingsSqlitePath = execSync(`echo ${THINGS_DB_PATH}`).toString().trim();
 
 export class ThingsSQLiteSyncError extends Error {}
 
