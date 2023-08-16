@@ -26,7 +26,7 @@ export class LogbookRenderer {
       .join(" ");
 
     const taskTitle =
-      `${task.title}[ ](things:///show?id=${task.uuid}) ${tags}`.trimEnd();
+      `${task.title} [ ](things:///show?id=${task.uuid}) ${tags}`.trimEnd();
 
     const notes = this.settings.doesSyncNoteBody
       ? String(task.notes || "")
