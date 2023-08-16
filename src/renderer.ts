@@ -40,7 +40,7 @@ export class LogbookRenderer {
     let mark = "x";
     if (task.cancelled) {
       mark = this.settings.canceledMark;
-    } else if (task.tags.includes("Meeting")) {
+    } else if (task.tags.includes("Meeting") || task.tags.includes("Call")) {
       mark = '"';
     } else if (task.tags.includes("Event")) {
       mark = "l";
